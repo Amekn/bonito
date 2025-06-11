@@ -1,83 +1,24 @@
 # Bonito
 
-[![PyPI version](https://badge.fury.io/py/ont-bonito.svg)](https://badge.fury.io/py/ont-bonito)
-[![py39](https://img.shields.io/badge/python-3.9-brightgreen.svg)](https://img.shields.io/badge/python-3.9-brightgreen.svg)
-[![py310](https://img.shields.io/badge/python-3.10-brightgreen.svg)](https://img.shields.io/badge/python-3.10-brightgreen.svg)
-[![py311](https://img.shields.io/badge/python-3.11-brightgreen.svg)](https://img.shields.io/badge/python-3.11-brightgreen.svg)
-[![py312](https://img.shields.io/badge/python-3.12-brightgreen.svg)](https://img.shields.io/badge/python-3.12-brightgreen.svg)
-[![py313](https://img.shields.io/badge/python-3.13-brightgreen.svg)](https://img.shields.io/badge/python-3.13-brightgreen.svg)
-[![cu118](https://img.shields.io/badge/cuda-11.8-blue.svg)](https://img.shields.io/badge/cuda-11.8-blue.svg)
-[![cu124](https://img.shields.io/badge/cuda-12.4-blue.svg)](https://img.shields.io/badge/cuda-12.4-blue.svg)
+This is an forked version of bonito including support for Nvidia Blackwell Series GPU
 
-Bonito is an open source research basecaller for Oxford Nanopore reads.
+### Installation Instruction
 
-For anything other than basecaller training or method development please use [dorado](https://github.com/nanoporetech/dorado).
+The current bonito version 0.9.1 rely on pytorch 2.6.0, which is not compatible with sm_120 required by GPUs such as RTX 5090, RTX 5080...etc
 
-```bash
-$ pip install --upgrade pip
-$ pip install ont-bonito
-$ bonito basecaller dna_r10.4.1_e8.2_400bps_hac@v5.0.0 /data/reads > basecalls.bam
-```
+In order to make bonito work on platform with those GPU, you first need:
+* Create a virtual environment using either conda or pip, make sure python 3.12 is installed in your environment.
+* Install pytorch 2.7.1 with CUDA 12.8 support (pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128). See: https://pytorch.org/get-started/locally/
+* Using a Blackwell compatible version of flash-attn. The official flash-attn build current do not support blackwell GPUs, however loscrossos has compiled a custom wheel on top of flash-attn 2.7.4.post1 with support for Blackwell GPUs. Run "pip3 install <wheel_file>" in the same virtual environment as above. See: https://github.com/loscrossos/lib_flashattention
+* The installation script in this forked bonito has been modified to be compatible with pytorch 2.7.1 and cuda 12.8 or above.
+* Run command follow to install bonito with blackwell support:
 
-Bonito supports writing aligned/unaligned `{fastq, sam, bam, cram}`.
+(ont-train) $ git clone https://github.com/Amekn/bonito
+(ont-train) $ cd bonito
+(ont-train) $ pip install --upgrade pip
+(ont-train) $ pip install -e .[cu128] --extra-index-url https://download.pytorch.org/whl/cu128
 
-```bash
-$ bonito basecaller dna_r10.4.1_e8.2_400bps_hac@v5.0.0 --reference reference.mmi /data/reads > basecalls.bam
-```
-
-Bonito will download and cache the basecalling model automatically on first use but all models can be downloaded with -
-
-``` bash
-$ bonito download --models --show  # show all available models
-$ bonito download --models         # download all available models
-```
-
-## Transformer Models
-
-The `bonito.transformer` package requires
-[flash-attn](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
-
-This must be manually installed as the `flash-attn` packaging system prevents it from being listed as a normal dependency.
-
-Setting `CUDA_HOME` to the relevant library directory will help avoid CUDA version mismatches between packages.
-
-## Modified Bases
-
-For modified-base calling with ont-supported mods please use [dorado](https://github.com/nanoporetech/dorado)
-For development of modified base calling models please see [remora](https://github.com/nanoporetech/remora).
-
-## Training your own model
-
-For detailed information on the training process, please see the [Training Documentation](documentation/training.md).
-
-## Developer Quickstart
-
-```bash
-$ git clone https://github.com/nanoporetech/bonito.git  # or fork first and clone that
-$ cd bonito
-$ python3 -m venv venv3
-$ source venv3/bin/activate
-(venv3) $ pip install --upgrade pip
-(venv3) $ pip install -e .[cu118] --extra-index-url https://download.pytorch.org/whl/cu118
-```
-
-The `ont-bonito[cu118]` and `ont-bonito[cu121]` optional dependencies can be used, along
-with the corresponding `--extra-index-url`, to ensure the PyTorch package matches the
-local CUDA setup.
-
-## Interface
-
- - `bonito view` - view a model architecture for a given `.toml` file and the number of parameters in the network.
- - `bonito train` - train a bonito model.
- - `bonito evaluate` - evaluate a model performance.
- - `bonito download` - download pretrained models and training datasets.
- - `bonito basecaller` - basecaller *(`.fast5` -> `.bam`)*.
-
-### References
-
- - [Sequence Modeling With CTC](https://distill.pub/2017/ctc/)
- - [Quartznet: Deep Automatic Speech Recognition With 1D Time-Channel Separable Convolutions](https://arxiv.org/pdf/1910.10261.pdf)
- - [Pair consensus decoding improves accuracy of neural network basecallers for nanopore sequencing](https://www.biorxiv.org/content/10.1101/2020.02.25.956771v1.full.pdf)
+and...here you go, bonito should be installed in your current virtual environment now. 
 
 ### Licence and Copyright
 (c) 2019 Oxford Nanopore Technologies Ltd.

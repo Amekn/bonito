@@ -37,9 +37,11 @@ setup(
     python_requires='>=3.9',
     extras_require={
         # --extra-index-url https://download.pytorch.org/whl/cu118
-        "cu118": ["torch==2.6.0+cu118"],
+        "cu118": ["torch==2.7.1+cu118"],
         # --extra-index-url https://download.pytorch.org/whl/cu124
-        "cu124": ["torch==2.6.0+cu124"],
+        "cu124": ["torch==2.7.1+cu124"],
+        # --extra-index-url https://download.pytorch.org/whl/cu128
+        "cu128": ["torch==2.7.1+cu128"],
     },
     entry_points={
         'console_scripts': [
