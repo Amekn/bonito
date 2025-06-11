@@ -14,8 +14,11 @@ In order to make bonito work on platform with those GPU, you first need:
 * Run command follow to install bonito with blackwell support:
 
 (ont-train) $ git clone https://github.com/Amekn/bonito
+
 (ont-train) $ cd bonito
+
 (ont-train) $ pip install --upgrade pip
+
 (ont-train) $ pip install -e .[cu128] --extra-index-url https://download.pytorch.org/whl/cu128
 
 and...here you go, bonito should be installed in your current virtual environment now. 
